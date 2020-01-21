@@ -1,0 +1,20 @@
+{
+  "actions": [
+    {
+      "name": "/actions/player_controller/in/left_hand",
+      "type": "pose"
+    },
+    {
+      "name": "/actions/player_controller/in/right_hand",
+      "type": "pose"
+    }
+  ],
+  "action_sets": [
+    {
+      "name": "/actions/player_controller",
+      "usage": "leftright"
+    }
+  ],
+  "default_bindings": [],
+  "localization": []
+}
