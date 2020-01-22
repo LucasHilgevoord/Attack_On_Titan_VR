@@ -18,13 +18,80 @@
                "path" : "/user/hand/right/pose/raw"
             }
          ],
-         "sources" : []
+         "sources" : [
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/player_controller/in/grip"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/grip"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/player_controller/in/grip"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/grip"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/player_controller/in/tp_left_press"
+                  },
+                  "position" : {
+                     "output" : "/actions/player_controller/in/tp_left_vector"
+                  }
+               },
+               "mode" : "trackpad",
+               "path" : "/user/hand/left/input/trackpad"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/player_controller/in/trigger_right"
+                  },
+                  "pull" : {
+                     "output" : "/actions/player_controller/in/trigger_right"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/right/input/trigger"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/player_controller/in/trigger_left"
+                  },
+                  "pull" : {
+                     "output" : "/actions/player_controller/in/trigger_left"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/left/input/trigger"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/player_controller/in/tp_right_press"
+                  },
+                  "position" : {
+                     "output" : "/actions/player_controller/in/tp_right_vector"
+                  }
+               },
+               "mode" : "trackpad",
+               "path" : "/user/hand/right/input/trackpad"
+            }
+         ]
       }
    },
    "category" : "steamvr_input",
    "controller_type" : "vive_controller",
    "description" : "just testing",
-   "name" : "AOT_player_controller",
+   "name" : "My AttackOnTitan [Testing] configuration for Vive Controller",
    "options" : {},
    "simulated_actions" : []
 }

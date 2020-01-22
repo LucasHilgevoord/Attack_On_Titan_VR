@@ -32,5 +32,61 @@ namespace Valve.VR
                 return SteamVR_Actions.player_controller_right_hand;
             }
         }
+        
+        public virtual SteamVR_Action_Boolean grip
+        {
+            get
+            {
+                return SteamVR_Actions.player_controller_grip;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean TP_left_press
+        {
+            get
+            {
+                return SteamVR_Actions.player_controller_TP_left_press;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean TP_right_press
+        {
+            get
+            {
+                return SteamVR_Actions.player_controller_TP_right_press;
+            }
+        }
+        
+        public virtual SteamVR_Action_Vector2 TP_left_vector
+        {
+            get
+            {
+                return SteamVR_Actions.player_controller_TP_left_vector;
+            }
+        }
+        
+        public virtual SteamVR_Action_Vector2 TP_right_vector
+        {
+            get
+            {
+                return SteamVR_Actions.player_controller_TP_right_vector;
+            }
+        }
+        
+        public virtual SteamVR_Action_Single trigger_left
+        {
+            get
+            {
+                return SteamVR_Actions.player_controller_trigger_left;
+            }
+        }
+        
+        public virtual SteamVR_Action_Single trigger_right
+        {
+            get
+            {
+                return SteamVR_Actions.player_controller_trigger_right;
+            }
+        }
     }
 }

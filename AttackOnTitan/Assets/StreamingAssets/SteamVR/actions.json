@@ -7,6 +7,34 @@
     {
       "name": "/actions/player_controller/in/right_hand",
       "type": "pose"
+    },
+    {
+      "name": "/actions/player_controller/in/grip",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/player_controller/in/TP_left_press",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/player_controller/in/TP_right_press",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/player_controller/in/TP_left_vector",
+      "type": "vector2"
+    },
+    {
+      "name": "/actions/player_controller/in/TP_right_vector",
+      "type": "vector2"
+    },
+    {
+      "name": "/actions/player_controller/in/trigger_left",
+      "type": "vector1"
+    },
+    {
+      "name": "/actions/player_controller/in/trigger_right",
+      "type": "vector1"
     }
   ],
   "action_sets": [
