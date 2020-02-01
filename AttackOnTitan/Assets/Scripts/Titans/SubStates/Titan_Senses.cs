@@ -33,14 +33,8 @@ public class Titan_Senses : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!useSenses) { Debug.Log("System: Sensing = DISABLED");  return; }
-        Debug.Log("System: Sensing = ENABLED");
+        if (!useSenses) { return; }
         SpotPlayer();
-        if (target != null) { Debug.DrawLine(transform.position, new Vector3(target.transform.position.x, target.transform.position.y + 0.1f, target.transform.position.z), Color.red); }
-        for (int i = 0; i < playersInRange.Count; i++)
-        {
-            Debug.DrawLine(transform.position, new Vector3(playersInRange[i].transform.position.x, playersInRange[i].transform.position.y - 0.1f, playersInRange[i].transform.position.z), Color.blue);
-        }
     }
 
     /// <summary>
@@ -50,10 +44,10 @@ public class Titan_Senses : MonoBehaviour
     {
         for (int i = 0; i < playersInRange.Count; i++)
         {
+            //Calculating player[i]'s position/angle
             Vector3 targetDir = playersInRange[i].transform.position - transform.position;
             float angleToPlayer = (Vector3.Angle(targetDir, transform.forward));
             Vector3 origin = transform.position;
-            Debug.DrawLine(origin, origin + transform.forward * sightRange, Color.green);
 
             //Check with raycast if player is seen when the player is within the sight angle
             if (angleToPlayer >= -sightAngle && angleToPlayer <= sightAngle)
@@ -63,7 +57,6 @@ public class Titan_Senses : MonoBehaviour
                 {
                     if (hit.collider.CompareTag("Player"))
                     {
-                        Debug.DrawLine(origin, hit.point, Color.cyan);
                         if (target != playersInRange[i] && target == null)
                         {
                             target = playersInRange[i];
@@ -77,7 +70,6 @@ public class Titan_Senses : MonoBehaviour
                     //When player[i] is behind something
                     else
                     {
-                        Debug.DrawLine(origin, hit.point, Color.yellow);
                         if (target == playersInRange[i])
                         {
                             ForgetPlayer();
@@ -120,17 +112,14 @@ public class Titan_Senses : MonoBehaviour
                 if (!playersInRange.Contains(players[i]))
                 {
                     playersInRange.Add(players[i]);
-                    //Debug.Log("Added: " + players[i].transform.name);
                 }
             }
             else if (playersInRange.Contains(players[i]))
             {
                 if (target == players[i])
-                {
                     target = null;
-                }
+
                 playersInRange.Remove(players[i]);
-                //Debug.Log("Removed: " + players[i].transform.name);
             }
         }
         useSenses = (playersInRange.Count != 0) ? true : false;
