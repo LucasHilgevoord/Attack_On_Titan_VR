@@ -125,6 +125,10 @@ public class Titan_Senses : MonoBehaviour
             }
             else if (playersInRange.Contains(players[i]))
             {
+                if (target == players[i])
+                {
+                    target = null;
+                }
                 playersInRange.Remove(players[i]);
                 //Debug.Log("Removed: " + players[i].transform.name);
             }
