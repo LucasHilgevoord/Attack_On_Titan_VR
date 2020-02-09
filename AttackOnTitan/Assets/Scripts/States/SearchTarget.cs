@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Titan_Senses : MonoBehaviour
+public class SearchTarget : MonoBehaviour
 {
-
+    private GameObject target;
+    public StateMachine controller;
     private GameObject[] players;
     private List<GameObject> playersInRange;
     private float checkDistanceDelay = 1;
 
     private bool useSenses = false;
-    private GameObject target;
     private float sightRange = 10;
     private float sightAngle = 45;
 
@@ -20,7 +20,6 @@ public class Titan_Senses : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Replace with reference--------
         players = GameObject.FindGameObjectsWithTag("Player");
         playersInRange = new List<GameObject>();
 
@@ -60,6 +59,8 @@ public class Titan_Senses : MonoBehaviour
                         if (target != playersInRange[i] && target == null)
                         {
                             target = playersInRange[i];
+                            controller.ChangeState("CHASE", new object[] { (object)target });
+                            //Change behavior state to chase
                         }
                         //Reset timer if player is back in sight after disappear.
                         if (target == playersInRange[i] && currentForgetTime != forgetTimer)
@@ -95,6 +96,7 @@ public class Titan_Senses : MonoBehaviour
         {
             target = null;
             currentForgetTime = forgetTimer;
+            controller.ChangeState("SEARCH", new object[] { (object)target });
         }
     }
 
