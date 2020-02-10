@@ -20,11 +20,25 @@ public class TitanController : StateMachine
         new StateID("DEAD", new DeadState())
     };
 
-    public int intelligence = 1;
-    public TitanType types;
+    public float intelligence = 1;
+    public TitanType type;
 
     void Start()
     {
+        switch (type)
+        {
+            case TitanType.NORMAL:
+                intelligence = Random.Range(1, 5);
+                break;
+            case TitanType.ABNORMAL:
+                intelligence = Random.Range(5, 10);
+                break;
+            case TitanType.CRAWLER:
+                intelligence = Random.Range(5, 10);
+                break;
+            default:
+                break;
+        }
         for (int i = 0; i < states.Length; i++)
         {
             AddState(states[i].stateName, states[i].stateScript);

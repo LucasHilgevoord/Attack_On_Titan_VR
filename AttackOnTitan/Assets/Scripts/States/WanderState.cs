@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class WanderState : State
 {
+
+    private float range = 20;
+
     public override void Start(StateMachine behaviour, object[] args = null)
     {
         //throw new System.NotImplementedException();

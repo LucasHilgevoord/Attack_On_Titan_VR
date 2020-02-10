@@ -4,14 +4,25 @@ using UnityEngine;
 
 public class IdleState : State
 {
-    public override void Start(StateMachine behaviour, object[] args = null)
+    private StateMachine controller;
+    private float minIdleTimer = 5f;
+    private float maxIdleTimer = 15f;
+    private float currentTimer;
+
+    public override void Start(StateMachine _controller, object[] _args = null)
     {
-        //throw new System.NotImplementedException();
+        controller = _controller;
+        currentTimer = Random.Range(minIdleTimer, maxIdleTimer);
     }
 
     public override void Update(StateMachine behaviour)
     {
-        //throw new System.NotImplementedException();
+        Debug.LogFormat("<b><color=green>Idle State:</color> {0}</b>", "Timer: " + (int)currentTimer);
+        currentTimer -= Time.deltaTime;
+        if (currentTimer <= 0)
+        {
+            controller.ChangeState("WANDER");
+        }
     }
 
     public override void End(StateMachine behaviour)

@@ -7,6 +7,7 @@ public class InvestigateState : State
     public override void Start(StateMachine behaviour, object[] args = null)
     {
         //throw new System.NotImplementedException();
+        Debug.Log("ENTERED SEARCH STATE");
     }
 
     public override void Update(StateMachine behaviour)

@@ -92,11 +92,12 @@ public class SearchTarget : MonoBehaviour
     private void ForgetPlayer()
     {
         currentForgetTime -= Time.deltaTime;
+        Debug.Log((int)currentForgetTime);
         if (currentForgetTime <= 0)
         {
-            target = null;
             currentForgetTime = forgetTimer;
             controller.ChangeState("SEARCH", new object[] { (object)target });
+            target = null;
         }
     }
 
