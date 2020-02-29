@@ -20,7 +20,7 @@ public class StateMachine : MonoBehaviour
 
     protected void Update()
     {
-        if (currentState != null) currentState.Update(this);
+        if (currentState != null) currentState.Update();
     }
 
     protected void AddState(string id, State state)
@@ -31,7 +31,7 @@ public class StateMachine : MonoBehaviour
 
     public void ChangeState(string id, object[] args = null)
     {
-        if (currentState != null) currentState.End(this);
+        if (currentState != null) currentState.End();
         if (!states.ContainsKey(id))
         {
             currentState = null;
