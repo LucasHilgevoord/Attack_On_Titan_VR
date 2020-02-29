@@ -2,38 +2,54 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SearchTarget : MonoBehaviour
+public class SearchBehavior : MonoBehaviour
 {
-    private GameObject target;
     public StateMachine controller;
+    private GameObject target;
     private GameObject[] players;
     private List<GameObject> playersInRange;
-    private float checkDistanceDelay = 1;
+
+    private float objectHeight;
+    public LayerMask mask;
+    private LayerMask ignoreMask;
+
+    private float checkDistanceDelay = 1; //Delay until it checks where all players are.
+    private float timer;
 
     private bool useSenses = false;
     private float sightRange = 10;
     private float sightAngle = 45;
+    private float personalSpaceRange = 1; // Range around entity where it still knows the targets location.
 
-    private float forgetTimer = 5;
+    private float forgetTimer = 0; // How long it takes until the entity forgets the target
     private float currentForgetTime;
 
-    // Start is called before the first frame update
     void Start()
     {
         players = GameObject.FindGameObjectsWithTag("Player");
         playersInRange = new List<GameObject>();
 
+        objectHeight = GetComponent<Collider>().bounds.max.y;
+        ignoreMask = ~mask.value;
+
+        timer = checkDistanceDelay;
         currentForgetTime = forgetTimer;
 
-        if (players.Length == 0) { return; }
-        InvokeRepeating("CheckPlayerDistance", 0, checkDistanceDelay);
+        //TESTING
+        target = players[0];
+        controller.ChangeState("CHASE", new object[] { (object)target });
     }
 
-    // Update is called once per frame
     void Update()
     {
+        timer -= Time.deltaTime;
+        if (timer <= 0)
+        {
+            CheckPlayerDistance();
+        }
+
         if (!useSenses) { return; }
-        SpotPlayer();
+        //SpotPlayer();
     }
 
     /// <summary>
@@ -46,41 +62,55 @@ public class SearchTarget : MonoBehaviour
             //Calculating player[i]'s position/angle
             Vector3 targetDir = playersInRange[i].transform.position - transform.position;
             float angleToPlayer = (Vector3.Angle(targetDir, transform.forward));
-            Vector3 origin = transform.position;
+            Vector3 origin = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 
-            //Check with raycast if player is seen when the player is within the sight angle
+            //Check with raycast if the player is within the sight angle
             if (angleToPlayer >= -sightAngle && angleToPlayer <= sightAngle)
             {
                 RaycastHit hit;
                 if (Physics.Raycast(origin, targetDir, out hit, sightRange))
                 {
+                    Debug.DrawLine(origin, hit.collider.transform.position, Color.red);
+                    //Debug.Log(hit.collider.name);
                     if (hit.collider.CompareTag("Player"))
                     {
+                        if (target)
+                        {
+                            Debug.DrawLine(origin, target.transform.position, Color.blue);
+                        }
                         if (target != playersInRange[i] && target == null)
                         {
                             target = playersInRange[i];
                             controller.ChangeState("CHASE", new object[] { (object)target });
-                            //Change behavior state to chase
                         }
-                        //Reset timer if player is back in sight after disappear.
+                        //Reset timer if player is back in sight after it disappeared.
                         if (target == playersInRange[i] && currentForgetTime != forgetTimer)
                         {
+                            Debug.Log("RESETTING----------------");
                             currentForgetTime = forgetTimer;
                         }
                     }
-                    //When player[i] is behind something
+                    //When the spotted player is behind something
                     else
                     {
+                        Debug.Log(hit.collider.name);
+
                         if (target == playersInRange[i])
                         {
+                            Debug.Log("Behind something");
                             ForgetPlayer();
                         }
                     }
                 }
             }
-            //When player is out of the sight angle 
-            else if (target == playersInRange[i]) 
+            else if (target == playersInRange[i] && (transform.position - players[i].transform.position).magnitude < personalSpaceRange)
             {
+                return;
+            }
+            //When spotted is out of the sight angle
+            else if (target == playersInRange[i])
+            {
+                Debug.Log("Out of Sight angle");
                 ForgetPlayer();
             }
         }
@@ -92,7 +122,7 @@ public class SearchTarget : MonoBehaviour
     private void ForgetPlayer()
     {
         currentForgetTime -= Time.deltaTime;
-        Debug.Log((int)currentForgetTime);
+        //Debug.Log(currentForgetTime);
         if (currentForgetTime <= 0)
         {
             currentForgetTime = forgetTimer;

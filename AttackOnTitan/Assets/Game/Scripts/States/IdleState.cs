@@ -15,9 +15,9 @@ public class IdleState : State
         currentTimer = Random.Range(minIdleTimer, maxIdleTimer);
     }
 
-    public override void Update(StateMachine behaviour)
+    public override void Update()
     {
-        Debug.LogFormat("<b><color=green>Idle State:</color> {0}</b>", "Timer: " + (int)currentTimer);
+        //Debug.LogFormat("<b><color=green>Idle State:</color> {0}</b>", "Timer: " + (int)currentTimer);
         currentTimer -= Time.deltaTime;
         if (currentTimer <= 0)
         {
@@ -25,7 +25,7 @@ public class IdleState : State
         }
     }
 
-    public override void End(StateMachine behaviour)
+    public override void End()
     {
         //throw new System.NotImplementedException();
     }

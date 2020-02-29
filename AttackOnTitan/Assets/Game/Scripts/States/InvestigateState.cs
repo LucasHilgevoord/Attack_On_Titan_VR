@@ -10,12 +10,12 @@ public class InvestigateState : State
         Debug.Log("ENTERED SEARCH STATE");
     }
 
-    public override void Update(StateMachine behaviour)
+    public override void Update()
     {
         //throw new System.NotImplementedException();
     }
 
-    public override void End(StateMachine behaviour)
+    public override void End()
     {
         //throw new System.NotImplementedException();
     }
