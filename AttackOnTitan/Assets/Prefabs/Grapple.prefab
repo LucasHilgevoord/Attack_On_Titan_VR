@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5720338025337339645}
   - component: {fileID: 9047444240433739308}
   - component: {fileID: 3946834649324235456}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 8941200606004647598}
   - component: {fileID: 2082253437173549613}
   - component: {fileID: 3344229175021680385}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Grapple
   m_TagString: Grapple
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ Transform:
   m_GameObject: {fileID: 3018789421077587187}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.029321402, y: 0.029321402, z: 0.029321402}
+  m_LocalScale: {x: 0.0293214, y: 0.0293214, z: 0.0293214}
   m_Children:
   - {fileID: 4444769230768030118}
   - {fileID: 5720338025337339645}
@@ -155,7 +155,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 1
 --- !u!1 &7069321086945040478
 GameObject:
@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 4444769230768030118}
   - component: {fileID: 6633838478340196422}
   - component: {fileID: 314462464406801965}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cone
   m_TagString: Untagged
   m_Icon: {fileID: 0}

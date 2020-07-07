@@ -60,17 +60,33 @@ public class GrappelingController : MonoBehaviour
             if (!grapple.GetComponent<HookBehavior>().collided)
             {
                 Vector3 velocityVector = grapple.transform.forward * grappleSpeed + beginVelocity;
-                grapple.position += velocityVector * Time.deltaTime;
                 RaycastHit grappleInfo;
-                if(Physics.Raycast(grapple.position, velocityVector, out grappleInfo, grappleSpeed * Time.deltaTime))
+                if (Physics.Raycast(grapple.position, velocityVector, out grappleInfo, grappleSpeed * Time.deltaTime, LayerMask.GetMask("Default")))
                 {
-                    grapple.position += velocityVector.normalized * (grappleInfo.distance + 0.5f);
+                    //The grapple is hitting something in this frame, so instead of updating the position, we immediatly do the collision code
+                    grapple.position = grappleInfo.point;
+                    grapple.GetComponent<HookBehavior>().collided = true;
+                    grapple.GetComponent<Collider>().enabled = false;
+                    GameObject empty = new GameObject();
+                    empty.name = "Grapple Parent";
+                    empty.transform.parent = grappleInfo.collider.gameObject.transform;
+                    grapple.parent = empty.transform;
+                    grapple.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 }
-                
+                else
+                {
+                    //Everything is clear, the grapple goes further
+                    grapple.position += velocityVector * Time.deltaTime;
+                }
+
             }
-            else
+            else if (grapple.parent == null)
             {
-                grapple.parent = grapple.GetComponent<HookBehavior>().collidedObject.transform;
+                //Trick to make grapple child of object without skewing the scale
+                GameObject empty = new GameObject();
+                empty.name = "Grapple Parent";
+                empty.transform.parent = grapple.GetComponent<HookBehavior>().collidedObject.transform;
+                grapple.parent = empty.transform;
                 grapple.GetComponent<Rigidbody>().velocity = Vector3.zero;
             }
             yield return new WaitForEndOfFrame();
@@ -84,23 +100,15 @@ public class GrappelingController : MonoBehaviour
     {
         //grapple.GetComponent<Rigidbody>().isKinematic = false;
         grapple.GetComponent<HookBehavior>().collided = false;
-        grapple.parent = null;
-        Vector3 grappleVectorSpeed;
-        while (Vector3.Distance(grapple.position, transform.position) > 0.5f)
+        if(grapple.parent != null)
         {
-            grappleVectorSpeed = (transform.position - grapple.position).normalized * grappleSpeed;
-            grapple.position += grappleVectorSpeed * Time.deltaTime;
-            RaycastHit grappleInfo;
-            Ray grappleRay = new Ray();
-            grappleRay.origin = grapple.position;
-            grappleRay.direction = grappleVectorSpeed;
+            Destroy(grapple.parent.gameObject);
+        }
+        grapple.parent = null;
 
-            GetComponent<Collider>().enabled = true;
-            if (GetComponent<Collider>().Raycast(grappleRay, out grappleInfo, grappleSpeed * Time.deltaTime))
-            {
-                GetComponent<Collider>().enabled = false;
-                grapple.position += grappleVectorSpeed.normalized * grappleInfo.distance;
-            }
+        while (Vector3.Distance(grapple.position, transform.position) > grappleSpeed * Time.deltaTime + 0.5f)
+        {
+            grapple.position += (transform.position - grapple.position).normalized * grappleSpeed * Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
 
