@@ -28,6 +28,8 @@ public class PlayerController : MonoBehaviour
     float stabilizerResistance = 0.1f;
     float breakForce = 50;
     float gravityCompensationForce = 3;
+    float gasAssistForce = 5;
+    float gasAssistClampFactor = 0.1f;
 
     float warmpUpSpeed = 50;
     float groundResistance = 3f;
@@ -149,6 +151,13 @@ public class PlayerController : MonoBehaviour
                         rb.AddForce(grappleVec * currentPullForce);
                         rb.AddForce(grappleVec * pullResistance * velocityToGrapple * -1);
                     }
+
+                    //Gas Assist (makes player move more straight in the direction of the grapple and less around it)
+                    Vector3 velVec = rb.velocity.normalized;
+                    Vector3 gasAssistVec = -1 * velVec + Vector3.Dot(grappleVec, velVec) * grappleVec;
+                    rb.AddForce(gasAssistVec * gasAssistForce * Mathf.Clamp01(rb.velocity.magnitude * gasAssistClampFactor));
+
+
                     //begin jump
                     if (IsGrounded() && canGrappleJump)
                     {
