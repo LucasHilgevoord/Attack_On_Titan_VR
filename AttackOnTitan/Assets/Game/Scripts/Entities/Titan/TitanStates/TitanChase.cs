@@ -9,11 +9,11 @@ public class TitanChase : ChaseState
     public float maxWalkVelocity = 2;
     public float maxRunVelocity = 10;
 
-    public override void Start(StateMachine behaviour, object[] args = null)
+    private void Start()
     {
-        base.Start(behaviour, args);
+        base.Start();
 
-        TitanController controller = (TitanController)behaviour;
+        controller = (TitanController)controller;
         type = controller.type;
 
         //Setting speed

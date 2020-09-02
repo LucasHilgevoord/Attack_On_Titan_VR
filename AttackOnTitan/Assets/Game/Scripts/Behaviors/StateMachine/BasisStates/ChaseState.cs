@@ -5,7 +5,6 @@ using UnityEngine.AI;
 
 public class ChaseState : State
 {
-    public Transform controller;
     public Rigidbody rb;
     public GameObject target;
 
@@ -15,30 +14,30 @@ public class ChaseState : State
     public float maxForce = 5;
     public float mass;
 
-    public override void Start(StateMachine _controller, object[] args = null)
+    public void Start()
     {
-        controller = _controller.gameObject.transform;
-        rb = _controller.gameObject.GetComponent<Rigidbody>();
-        target = (GameObject)args[0];
+        rb = controller.gameObject.GetComponent<Rigidbody>();
+        //target = (GameObject)args[0];
         curVelocity = Vector3.zero;
         //throw new System.NotImplementedException();
     }
 
-    public override void Update()
+    private void Update()
     {
         FollowPlayer();
         //agent.destination = target.transform.position;
         //throw new System.NotImplementedException();
     }
 
-    public override void End()
+    public override void OnDestroy()
     {
         //throw new System.NotImplementedException();
     }
 
     private void FollowPlayer()
     {
-        var desiredVelocity = target.transform.position - controller.position;
+        Vector3 controllerPos = controller.transform.position;
+        var desiredVelocity = target.transform.position - controllerPos;
         desiredVelocity = desiredVelocity.normalized * maxVelocity;
 
         var steering = desiredVelocity - curVelocity;
@@ -46,10 +45,10 @@ public class ChaseState : State
         steering /= rb.mass;
 
         curVelocity = Vector3.ClampMagnitude(curVelocity + steering, maxVelocity);
-        controller.position += curVelocity * Time.deltaTime;
-        controller.forward = new Vector3(curVelocity.normalized.x, 0, curVelocity.normalized.z);
+        controllerPos += curVelocity * Time.deltaTime;
+        controller.transform.forward = new Vector3(curVelocity.normalized.x, 0, curVelocity.normalized.z);
 
-        Debug.DrawRay(controller.position,curVelocity.normalized * 2, Color.green);
-        Debug.DrawRay(controller.position, desiredVelocity.normalized * 2, Color.magenta);
+        Debug.DrawRay(controllerPos, curVelocity.normalized * 2, Color.green);
+        Debug.DrawRay(controllerPos, desiredVelocity.normalized * 2, Color.magenta);
     }
 }

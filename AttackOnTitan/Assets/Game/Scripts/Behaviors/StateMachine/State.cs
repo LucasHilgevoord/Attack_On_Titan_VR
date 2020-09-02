@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class State
+public abstract class State : MonoBehaviour
 {
-    public abstract void Start(StateMachine behaviour, object[] args = null);
-    public abstract void Update();
-    public abstract void End();
+    public StateMachine controller;
+
+    public void Awake()
+    {
+        controller = this.gameObject.GetComponent<StateMachine>();
+    }
+
+    public abstract void OnDestroy();
 }

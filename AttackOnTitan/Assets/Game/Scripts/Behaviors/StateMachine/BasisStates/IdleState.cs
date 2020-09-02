@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class IdleState : State
 {
-    private StateMachine controller;
     private float minIdleTimer = 5f;
     private float maxIdleTimer = 15f;
     private float currentTimer;
 
-    public override void Start(StateMachine _controller, object[] _args = null)
+    private void Start()
     {
-        controller = _controller;
         currentTimer = Random.Range(minIdleTimer, maxIdleTimer);
     }
 
-    public override void Update()
+    private void Update()
     {
         //Debug.LogFormat("<b><color=green>Idle State:</color> {0}</b>", "Timer: " + (int)currentTimer);
         currentTimer -= Time.deltaTime;
@@ -25,7 +23,7 @@ public class IdleState : State
         }
     }
 
-    public override void End()
+    public override void OnDestroy()
     {
         //throw new System.NotImplementedException();
     }

@@ -5,12 +5,11 @@ using UnityEngine;
 public class TitanController : StateMachine
 {
     public StateID[] states = {
-        new StateID("WANDER", new WanderState()),
-        new StateID("IDLE", new IdleState()),
-        new StateID("SEARCH", new InvestigateState()),
-        new StateID("CHASE", new TitanChase()),
-        new StateID("ATTACK", new AttackState()),
-        new StateID("DEAD", new DeadState())
+        //new StateID("WANDER", typeof(WanderState), null),
+        new StateID("IDLE", typeof(IdleState), null),
+        new StateID("CHASE", typeof(ChaseState), null),
+        new StateID("ATTACK", typeof(AttackState), null),
+        //new StateID("DEAD", typeof(WanderState), null)
     };
 
     public TitanTypes.TitanType type;
@@ -23,11 +22,5 @@ public class TitanController : StateMachine
             AddState(states[i].stateName, states[i].stateScript);
         }
         ChangeState("IDLE");
-    }
-
-    new void Update()
-    {
-        //Updating the Update in StateMachine
-        base.Update();
     }
 }

@@ -1,44 +1,49 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class StateID
 {
     public string stateName;
-    public State stateScript;
-    public StateID(string name, State script)
+    public Type stateScript;
+    public object[] args;
+    public StateID(string name, Type script, object[] args = null)
     {
         stateName = name;
         stateScript = script;
+        args = this.args;
     }
 }
 
 public class StateMachine : MonoBehaviour
 {
+    private Dictionary<string, Type> states = new Dictionary<string, Type>();
     private State currentState = null;
-    private Dictionary<string, State> states = new Dictionary<string, State>();
 
-    protected void Update()
-    {
-        if (currentState != null) currentState.Update();
-    }
-
-    protected void AddState(string id, State state)
+    /// <summary>
+    /// Add a state to the StateMachine.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="state"></param>
+    protected void AddState(string id, Type state)
     {
         states.Add(id, state);
-        Debug.LogFormat("<b><color=blue>State added:</color> {0}</b>", id);
     }
 
-    public void ChangeState(string id, object[] args = null)
+    /// <summary>
+    /// Change the current state to the assigned new state.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="args"></param>
+    public void ChangeState(string id)
     {
-        if (currentState != null) currentState.End();
+        Destroy(currentState);
         if (!states.ContainsKey(id))
         {
             currentState = null;
             return;
         }
-        currentState = states[id];
-        currentState.Start(this, args);
-        Debug.LogFormat("<b><color=red>State started:</color> {0}</b>", id);
+        currentState = this.gameObject.AddComponent(states[id]) as State;
     }
 }
