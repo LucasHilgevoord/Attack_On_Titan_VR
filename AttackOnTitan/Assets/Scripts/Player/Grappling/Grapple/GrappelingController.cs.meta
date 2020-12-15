@@ -3,7 +3,10 @@ guid: 8722c4aa9413a5642ba44784113685b4
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - sword: {instanceID: 0}
+  - grapplePrefab: {fileID: 3018789421077587187, guid: b31813f24faa3ec47918beb1cbbfc91c,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

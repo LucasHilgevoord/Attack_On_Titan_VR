@@ -9,7 +9,7 @@
       "type": "pose"
     },
     {
-      "name": "/actions/player_controller/in/grip",
+      "name": "/actions/player_controller/in/grip_right",
       "type": "boolean"
     },
     {
@@ -35,6 +35,10 @@
     {
       "name": "/actions/player_controller/in/trigger_right",
       "type": "vector1"
+    },
+    {
+      "name": "/actions/player_controller/in/grip_left",
+      "type": "boolean"
     }
   ],
   "action_sets": [

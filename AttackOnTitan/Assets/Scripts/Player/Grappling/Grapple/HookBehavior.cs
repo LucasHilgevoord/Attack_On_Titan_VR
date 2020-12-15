@@ -6,7 +6,7 @@ public class HookBehavior : MonoBehaviour
 {
 
     public bool collided = false;
-    float grappleRotSpeed = 5;
+    float grappleRotSpeed = 0;
     public GameObject collidedObject;
     private GameObject[] players;
     private GameObject[] grapples;

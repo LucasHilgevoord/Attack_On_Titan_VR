@@ -1,11 +1,9 @@
 fileFormatVersion: 2
-guid: 1d48d673f75492b4d9d1c166ee225675
+guid: 6b3fee5b54d4a5c4ea29b6797197b183
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - VRCamera: {fileID: 4443443444345712486, guid: 7a069bc3ea99ce14a9b310b38300d871,
-      type: 2}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

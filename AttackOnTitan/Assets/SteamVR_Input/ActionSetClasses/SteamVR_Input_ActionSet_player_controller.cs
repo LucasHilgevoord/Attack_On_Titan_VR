@@ -33,11 +33,11 @@ namespace Valve.VR
             }
         }
         
-        public virtual SteamVR_Action_Boolean grip
+        public virtual SteamVR_Action_Boolean grip_right
         {
             get
             {
-                return SteamVR_Actions.player_controller_grip;
+                return SteamVR_Actions.player_controller_grip_right;
             }
         }
         
@@ -86,6 +86,14 @@ namespace Valve.VR
             get
             {
                 return SteamVR_Actions.player_controller_trigger_right;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean grip_left
+        {
+            get
+            {
+                return SteamVR_Actions.player_controller_grip_left;
             }
         }
     }

@@ -21,7 +21,7 @@ namespace Valve.VR
         
         private static SteamVR_Action_Pose p_player_controller_right_hand;
         
-        private static SteamVR_Action_Boolean p_player_controller_grip;
+        private static SteamVR_Action_Boolean p_player_controller_grip_right;
         
         private static SteamVR_Action_Boolean p_player_controller_TP_left_press;
         
@@ -34,6 +34,8 @@ namespace Valve.VR
         private static SteamVR_Action_Single p_player_controller_trigger_left;
         
         private static SteamVR_Action_Single p_player_controller_trigger_right;
+        
+        private static SteamVR_Action_Boolean p_player_controller_grip_left;
         
         public static SteamVR_Action_Pose player_controller_left_hand
         {
@@ -51,11 +53,11 @@ namespace Valve.VR
             }
         }
         
-        public static SteamVR_Action_Boolean player_controller_grip
+        public static SteamVR_Action_Boolean player_controller_grip_right
         {
             get
             {
-                return SteamVR_Actions.p_player_controller_grip.GetCopy<SteamVR_Action_Boolean>();
+                return SteamVR_Actions.p_player_controller_grip_right.GetCopy<SteamVR_Action_Boolean>();
             }
         }
         
@@ -107,37 +109,48 @@ namespace Valve.VR
             }
         }
         
+        public static SteamVR_Action_Boolean player_controller_grip_left
+        {
+            get
+            {
+                return SteamVR_Actions.p_player_controller_grip_left.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
         private static void InitializeActionArrays()
         {
             Valve.VR.SteamVR_Input.actions = new Valve.VR.SteamVR_Action[] {
                     SteamVR_Actions.player_controller_left_hand,
                     SteamVR_Actions.player_controller_right_hand,
-                    SteamVR_Actions.player_controller_grip,
+                    SteamVR_Actions.player_controller_grip_right,
                     SteamVR_Actions.player_controller_TP_left_press,
                     SteamVR_Actions.player_controller_TP_right_press,
                     SteamVR_Actions.player_controller_TP_left_vector,
                     SteamVR_Actions.player_controller_TP_right_vector,
                     SteamVR_Actions.player_controller_trigger_left,
-                    SteamVR_Actions.player_controller_trigger_right};
+                    SteamVR_Actions.player_controller_trigger_right,
+                    SteamVR_Actions.player_controller_grip_left};
             Valve.VR.SteamVR_Input.actionsIn = new Valve.VR.ISteamVR_Action_In[] {
                     SteamVR_Actions.player_controller_left_hand,
                     SteamVR_Actions.player_controller_right_hand,
-                    SteamVR_Actions.player_controller_grip,
+                    SteamVR_Actions.player_controller_grip_right,
                     SteamVR_Actions.player_controller_TP_left_press,
                     SteamVR_Actions.player_controller_TP_right_press,
                     SteamVR_Actions.player_controller_TP_left_vector,
                     SteamVR_Actions.player_controller_TP_right_vector,
                     SteamVR_Actions.player_controller_trigger_left,
-                    SteamVR_Actions.player_controller_trigger_right};
+                    SteamVR_Actions.player_controller_trigger_right,
+                    SteamVR_Actions.player_controller_grip_left};
             Valve.VR.SteamVR_Input.actionsOut = new Valve.VR.ISteamVR_Action_Out[0];
             Valve.VR.SteamVR_Input.actionsVibration = new Valve.VR.SteamVR_Action_Vibration[0];
             Valve.VR.SteamVR_Input.actionsPose = new Valve.VR.SteamVR_Action_Pose[] {
                     SteamVR_Actions.player_controller_left_hand,
                     SteamVR_Actions.player_controller_right_hand};
             Valve.VR.SteamVR_Input.actionsBoolean = new Valve.VR.SteamVR_Action_Boolean[] {
-                    SteamVR_Actions.player_controller_grip,
+                    SteamVR_Actions.player_controller_grip_right,
                     SteamVR_Actions.player_controller_TP_left_press,
-                    SteamVR_Actions.player_controller_TP_right_press};
+                    SteamVR_Actions.player_controller_TP_right_press,
+                    SteamVR_Actions.player_controller_grip_left};
             Valve.VR.SteamVR_Input.actionsSingle = new Valve.VR.SteamVR_Action_Single[] {
                     SteamVR_Actions.player_controller_trigger_left,
                     SteamVR_Actions.player_controller_trigger_right};
@@ -147,26 +160,28 @@ namespace Valve.VR
             Valve.VR.SteamVR_Input.actionsVector3 = new Valve.VR.SteamVR_Action_Vector3[0];
             Valve.VR.SteamVR_Input.actionsSkeleton = new Valve.VR.SteamVR_Action_Skeleton[0];
             Valve.VR.SteamVR_Input.actionsNonPoseNonSkeletonIn = new Valve.VR.ISteamVR_Action_In[] {
-                    SteamVR_Actions.player_controller_grip,
+                    SteamVR_Actions.player_controller_grip_right,
                     SteamVR_Actions.player_controller_TP_left_press,
                     SteamVR_Actions.player_controller_TP_right_press,
                     SteamVR_Actions.player_controller_TP_left_vector,
                     SteamVR_Actions.player_controller_TP_right_vector,
                     SteamVR_Actions.player_controller_trigger_left,
-                    SteamVR_Actions.player_controller_trigger_right};
+                    SteamVR_Actions.player_controller_trigger_right,
+                    SteamVR_Actions.player_controller_grip_left};
         }
         
         private static void PreInitActions()
         {
             SteamVR_Actions.p_player_controller_left_hand = ((SteamVR_Action_Pose)(SteamVR_Action.Create<SteamVR_Action_Pose>("/actions/player_controller/in/left_hand")));
             SteamVR_Actions.p_player_controller_right_hand = ((SteamVR_Action_Pose)(SteamVR_Action.Create<SteamVR_Action_Pose>("/actions/player_controller/in/right_hand")));
-            SteamVR_Actions.p_player_controller_grip = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/player_controller/in/grip")));
+            SteamVR_Actions.p_player_controller_grip_right = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/player_controller/in/grip_right")));
             SteamVR_Actions.p_player_controller_TP_left_press = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/player_controller/in/TP_left_press")));
             SteamVR_Actions.p_player_controller_TP_right_press = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/player_controller/in/TP_right_press")));
             SteamVR_Actions.p_player_controller_TP_left_vector = ((SteamVR_Action_Vector2)(SteamVR_Action.Create<SteamVR_Action_Vector2>("/actions/player_controller/in/TP_left_vector")));
             SteamVR_Actions.p_player_controller_TP_right_vector = ((SteamVR_Action_Vector2)(SteamVR_Action.Create<SteamVR_Action_Vector2>("/actions/player_controller/in/TP_right_vector")));
             SteamVR_Actions.p_player_controller_trigger_left = ((SteamVR_Action_Single)(SteamVR_Action.Create<SteamVR_Action_Single>("/actions/player_controller/in/trigger_left")));
             SteamVR_Actions.p_player_controller_trigger_right = ((SteamVR_Action_Single)(SteamVR_Action.Create<SteamVR_Action_Single>("/actions/player_controller/in/trigger_right")));
+            SteamVR_Actions.p_player_controller_grip_left = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/player_controller/in/grip_left")));
         }
     }
 }

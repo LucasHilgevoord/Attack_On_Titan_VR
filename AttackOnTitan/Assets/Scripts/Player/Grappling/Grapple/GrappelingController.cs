@@ -7,10 +7,8 @@ public class GrappelingController : MonoBehaviour
 {
 
     [SerializeField]
-    GameObject sword;
+    GameObject grapple;
 
-    [SerializeField]
-    GameObject grapplePrefab;
     [SerializeField]
     float grappleSpeed = 200;
     [SerializeField]
@@ -24,32 +22,65 @@ public class GrappelingController : MonoBehaviour
 
     private Valve.VR.SteamVR_Action_Single button;
 
+    LineRenderer grappleLine;
+
+    float lineTimer = 0;
+    bool linePhase = false;
+    float flatPart = 0;
+
     private void Start()
     {
         if (definedButton == "TriggerLeft") button = SteamVR_Actions.player_controller.trigger_left;
         if (definedButton == "TriggerRight") button = SteamVR_Actions.player_controller.trigger_right;
+
+        grappleLine = GetComponent<LineRenderer>();
+
+        grapple.SetActive(false);
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        if(button.axis > 0.5f)
+        if(button.axis == 1f)
         {
             pressedTrigger = true;
-            if (canGrapple) CreateGrapple();
-            canGrapple = false;
+            if (canGrapple && button.changed)
+            {
+                startGrapple();
+                canGrapple = false;
+            }
         }
         else pressedTrigger = false;
+
+        //Make the LineRenderer connect grapple and grapple point.
+        if (grappleLine.enabled)
+        {
+            GetComponent<GrappleLineDrawer>().DrawLooseLine(grapple.transform.position, transform.position, lineTimer, flatPart);
+            lineTimer += Time.deltaTime;
+
+            if (linePhase)
+            {
+                flatPart += Time.deltaTime;
+            }
+        }
     }
 
-    void CreateGrapple()
+    void startGrapple()
     {
-        GameObject grapple = Instantiate(grapplePrefab);
-        grapple.name = "Grapple";
+        grapple.SetActive(true);
         grapple.transform.position = transform.position;
-        grapple.transform.rotation = sword.transform.rotation;
+        grapple.transform.rotation = transform.parent.transform.rotation;
+        grappleLine.enabled = true;
+        lineTimer = 0;
+        flatPart = 0;
         StartCoroutine(MoveGrapple(grapple.transform, GetComponentInParent<Rigidbody>().velocity));
+    }
+
+    void endGrapple()
+    {
+        grapple.SetActive(false);
+        grapple.transform.parent = null;
     }
 
     IEnumerator MoveGrapple(Transform grapple, Vector3 beginVelocity)
@@ -72,6 +103,8 @@ public class GrappelingController : MonoBehaviour
                     empty.transform.parent = grappleInfo.collider.gameObject.transform;
                     grapple.parent = empty.transform;
                     grapple.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                    linePhase = true;
+                    lineTimer = 0;
                 }
                 else
                 {
@@ -88,6 +121,8 @@ public class GrappelingController : MonoBehaviour
                 empty.transform.parent = grapple.GetComponent<HookBehavior>().collidedObject.transform;
                 grapple.parent = empty.transform;
                 grapple.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                linePhase = true;
+                lineTimer = 0;
             }
             yield return new WaitForEndOfFrame();
         }
@@ -106,6 +141,10 @@ public class GrappelingController : MonoBehaviour
         }
         grapple.parent = null;
 
+        //Manage grapple line
+        linePhase = true;
+        lineTimer = 0;
+
         while (Vector3.Distance(grapple.position, transform.position) > grappleSpeed * Time.deltaTime + 0.5f)
         {
             grapple.position += (transform.position - grapple.position).normalized * grappleSpeed * Time.deltaTime;
@@ -113,7 +152,9 @@ public class GrappelingController : MonoBehaviour
         }
 
         //Allow grappling again
-        Destroy(grapple.gameObject);
+        endGrapple();
         canGrapple = true;
+        grappleLine.enabled = false;
+        linePhase = false;
     }
 }
