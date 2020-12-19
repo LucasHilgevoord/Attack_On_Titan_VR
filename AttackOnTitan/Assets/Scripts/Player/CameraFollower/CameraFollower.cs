@@ -37,7 +37,7 @@ public class CameraFollower : MonoBehaviour
     void Update()
     {
         //Set the body at a certain ratio of your current height, so it will always be somewhere around your actual hips
-        yOffset = VRCamera.transform.localPosition.y / hipRatio;
+        yOffset = VRCamera.transform.localPosition.y * hipRatio;
 
         //Set xOffset and zOffset according to sideways and forwards/backwards head rotation
         xOffset = -VRCamera.up.x * neckRadius;

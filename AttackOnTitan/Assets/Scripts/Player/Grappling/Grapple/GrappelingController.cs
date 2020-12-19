@@ -10,6 +10,9 @@ public class GrappelingController : MonoBehaviour
     GameObject grapple;
 
     [SerializeField]
+    Transform handTarget;
+
+    [SerializeField]
     float grappleSpeed = 200;
     [SerializeField]
     float grappleLength = 50;
@@ -70,7 +73,9 @@ public class GrappelingController : MonoBehaviour
     {
         grapple.SetActive(true);
         grapple.transform.position = transform.position;
-        grapple.transform.rotation = transform.parent.transform.rotation;
+        //grapple.transform.rotation = transform.parent.transform.rotation;
+        //grapple.transform.LookAt(grapple.transform.position - transform.parent.up);
+        grapple.transform.LookAt(grapple.transform.position + handTarget.up);
         grappleLine.enabled = true;
         lineTimer = 0;
         flatPart = 0;

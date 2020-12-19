@@ -1,0 +1,191 @@
+fileFormatVersion: 2
+guid: cae5967a480946e4281589b045928043
+ModelImporter:
+  serializedVersion: 19301
+  internalIDToNameTable:
+  - first:
+      74: -4791504522942941401
+    second: Armature|Armature|mixamo.com|Layer0
+  - first:
+      74: 6165553400957861818
+    second: Armature|Armature|mixamo.com|Layer0.001
+  - first:
+      74: 4728087161477849458
+    second: Armature|Cylinder004|Take 001|BaseLayer
+  - first:
+      74: -3143923986552028477
+    second: Armature|Cylinder004|Take 001|BaseLayer.001
+  - first:
+      74: 6958875484023871953
+    second: Armature|Cylinder004|Take 001|BaseLayer.002
+  - first:
+      74: -786763202157975891
+    second: Armature|Cylinder004|Take 001|BaseLayer.003
+  - first:
+      74: -3917778279508941130
+    second: Armature|Cylinder009|Take 001|BaseLayer
+  - first:
+      74: 9158465086835511039
+    second: Armature|Cylinder009|Take 001|BaseLayer.001
+  - first:
+      74: 4401548975779496312
+    second: Armature|Cylinder009|Take 001|BaseLayer.002
+  - first:
+      74: 6029103731440192427
+    second: Armature|Cylinder009|Take 001|BaseLayer.003
+  - first:
+      74: -7213507607529603552
+    second: Armature|Cylinder014|Take 001|BaseLayer
+  - first:
+      74: -1347882825718961222
+    second: Armature|Cylinder014|Take 001|BaseLayer.001
+  - first:
+      74: 8267929315880885870
+    second: Armature|Cylinder014|Take 001|BaseLayer.002
+  - first:
+      74: 3024345147147469253
+    second: Armature|Cylinder014|Take 001|BaseLayer.003
+  - first:
+      74: 221240223022190247
+    second: Armature|Cylinder019|Take 001|BaseLayer
+  - first:
+      74: 1216939284592625917
+    second: Armature|Cylinder019|Take 001|BaseLayer.001
+  - first:
+      74: 6840786555961858101
+    second: Armature|Cylinder019|Take 001|BaseLayer.002
+  - first:
+      74: 8510340703183226545
+    second: Armature|Cylinder019|Take 001|BaseLayer.003
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Alpha_Body_MAT
+    second: {fileID: 2100000, guid: 58bb33abdf41d00488b3aedad6745f96, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Alpha_Joints_MAT
+    second: {fileID: 2100000, guid: 3ed0c38771b50cd4b978e0934eb42d47, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Beam
+    second: {fileID: 2100000, guid: e10330cb7d7a8a54484ec622196ab5aa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: blade
+    second: {fileID: 2100000, guid: 497f040826338cc47a461ccd448fc664, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: blade edge
+    second: {fileID: 2100000, guid: d872060b41016fe41883bee17c7459fe, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: body
+    second: {fileID: 2100000, guid: d2deec5562b1ac4448df56e63b2feb83, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: carbonfiber
+    second: {fileID: 2100000, guid: 8ad638ca5d6c15e45a3dde1848959a9d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: strap
+    second: {fileID: 2100000, guid: 89893c1b82174634088859d6e44df254, type: 2}
+  materials:
+    materialImportMode: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

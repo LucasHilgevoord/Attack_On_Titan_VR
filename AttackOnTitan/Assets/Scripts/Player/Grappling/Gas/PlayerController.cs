@@ -8,6 +8,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     GameObject playerHead;
 
+    [SerializeField]
+    Transform[] handTargets; //First left, then right
+
     bool activateGasLeft = false;
     bool activateGasRight = false;
     bool canGrappleJump = true;
@@ -17,7 +20,7 @@ public class PlayerController : MonoBehaviour
     float maxGas = 200; //Volume of tank in seconds of use (using both hands will consume double the amount)
     float currentGas = 200;
 
-    float gasForce = 7;
+    float gasForce = 6;
     float gasTankParameter = 10; //The higher this is, the more "square" the graph looks of force vs tank content
     //Commented below are vars for overheating system
     /*float gasDecayTime = 2;
@@ -27,9 +30,9 @@ public class PlayerController : MonoBehaviour
     float gasCooldownMultiplier = 1;*/
 
     float jumpForce = 60;
-    float maxPullForce = 50;
+    float maxPullForce = 30;
     float currentPullForce = 0;
-    float strongPullForce = 50; //This force will added on top of the normal pullForce, but isn't affected by warming up.
+    float strongPullForce = 30; //This force will added on top of the normal pullForce, but isn't affected by warming up.
     float pullResistance = 2;
     float stabilizerResistance = 0.1f;
     float breakForce = 50;
@@ -269,7 +272,8 @@ public class PlayerController : MonoBehaviour
         float tankRatio = currentGas / maxGas;
         float amplitude = 1 / (1 - Mathf.Exp(-gasTankParameter));
         float strength = gasForce * amplitude * (1 - Mathf.Exp(-gasTankParameter * tankRatio));
-        rb.AddForce(hands[side].transform.up * strength); //Note: side=0 is left, side=1 is right
+        rb.AddForce(handTargets[side].right * Mathf.Pow(-1, side) * strength); //Note: side=0 is left, side=1 is right
+        //Also note: For the right hand (side=1) I need the right vector flipped, that's where the power of -1 is for.
         currentGas -= Time.deltaTime;
         if (currentGas < 0) currentGas = 0;
     }
