@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
 
-public class GrappelingController : MonoBehaviour
+/// <summary>
+/// Script to control the movement of a grapple.
+/// </summary>
+public class GrappleBehaviour : MonoBehaviour
 {
-
     [SerializeField]
     GameObject grapple;
 

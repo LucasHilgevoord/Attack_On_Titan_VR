@@ -157,7 +157,7 @@ PlayerSettings:
       lowOverheadMode: 0
       protectedContext: 0
       v2Signing: 0
-    enable360StereoCapture: 0
+    enable360StereoCapture: 1
   isWsaHolographicRemotingEnabled: 0
   enableFrameTimingStats: 0
   useHDRDisplay: 0
@@ -321,7 +321,6 @@ PlayerSettings:
     m_Enabled: 1
     m_Devices:
     - OpenVR
-    - Oculus
   openGLRequireES31: 0
   openGLRequireES31AEP: 0
   openGLRequireES32: 0
