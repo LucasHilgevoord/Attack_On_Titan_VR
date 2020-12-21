@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     private Collider col;
 
     [Header("Stats")]
-    private float groundResistance = 3f;
+    private float groundResistance = 3;
     private float walkingForce = 20;
     private float maxWalkSpeed = 5;
 

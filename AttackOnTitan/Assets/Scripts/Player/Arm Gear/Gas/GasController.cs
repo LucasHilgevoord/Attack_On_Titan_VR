@@ -13,31 +13,32 @@ public class GasController : MonoBehaviour
     [SerializeField] private Transform rightHandTarget;
 
     [Header("Stats")]
-    [Tooltip("The force of each gas thruster. Using both hands will result in two separate forces with this magnitude")]
+    [Tooltip("The force of each gas thruster. Using both hands will result in two separate forces with this magnitude.")]
     [SerializeField] private float gasForce = 7;
-    [Tooltip("Gas burst gives an instant velocity change of this magnitude")]
-    [SerializeField] private float gasBurstSpeed = 1;
-    [Tooltip("The volume of the gas tank in seconds of use. Using both hands means gas will deplete 2x faster")]
+    [Tooltip("Gas burst gives an instant velocity change of this magnitude.")]
+    [SerializeField] private float gasBurstSpeed = 7;
+    [Tooltip("How much gas the gas burst uses.")]
+    [SerializeField] private float gasBurstCost = 5;
+    [Tooltip("Performance of gas tank goes down when gas is almost empty. The higher Gas Tank Parameter is, the more 'square' the graph looks of force vs tank content.")]
+    [SerializeField] private float gasTankParameter = 10;
+
+    [Header("Gas tank")]
+    [Tooltip("The volume of the gas tank in seconds of use. Using both hands means gas will deplete 2x faster.")]
     [SerializeField] private float maxGas = 10000;
-    [Tooltip("How much gas the gas burst uses")]
-    [SerializeField] private float gasBurstCost = 5; //Amount of gas that the gas burst uses
+    [Tooltip("Current amount of gas (see Max Gas).")]
+    [SerializeField] private float currentGas = 10000;
 
     [Header("Options")]
-    [Tooltip("False: Gas comes from palms.\nTrue: Kinda like a jetpack, gas is controlled with left trackpad")]
-    [SerializeField] private bool altGasMode = false; //False (alternative gas mode): Gas comes from hands. true (normal gas mode): gas comes from palms
-    [Tooltip("If gas is activated 2 times within this time apart, gas burst activates (seperate for both hands)")]
+    [Tooltip("False: Gas comes from palms.\nTrue: Kinda like a jetpack, gas is controlled with left trackpad.")]
+    [SerializeField] private bool altGasMode = false;
+    [Tooltip("If gas is activated 2 times within this time apart, gas burst activates (seperate for both hands).")]
     [SerializeField] private float burstActivationTime = 0.5f;
 
-    [Header("Calculation booleans")]
+    [Header("Calculation vars")]
     private bool activateGasLeft = false;
     private bool activateGasRight = false;
     private bool activateGasBurstLeft = false;
     private bool activateGasBurstRight = false;
-
-    [Header("Calculation floats")]
-    [Tooltip("Current amount of gas (see Max Gas)")]
-    [SerializeField] private float currentGas = 10000;
-    private float gasTankParameter = 10; //The higher this is, the more "square" the graph looks of force vs tank content
     private float[] burstTimer = { 0, 0 };
     #endregion
 
@@ -115,7 +116,7 @@ public class GasController : MonoBehaviour
         //Code to weaken force when tank is almost empty
         float tankRatio = currentGas / maxGas;
         float amplitude = 1 / (1 - Mathf.Exp(-gasTankParameter));
-        float strength = gasForce * amplitude * (1 - Mathf.Exp(-gasTankParameter * tankRatio));
+        float strength = amplitude * (1 - Mathf.Exp(-gasTankParameter * tankRatio));
 
         if (burst)
         {
@@ -125,7 +126,7 @@ public class GasController : MonoBehaviour
         }
         else
         {
-            rb.AddForce(hand.right * Mathf.Pow(-1, flip) * strength); //Note: side=0 is left, side=1 is right
+            rb.AddForce(hand.right * Mathf.Pow(-1, flip) * strength * gasForce); //Note: side=0 is left, side=1 is right
             //Also note: For the right hand (side=1) I need the right vector flipped, that's where the power of -1 is for.
             currentGas -= Time.deltaTime;
             if (currentGas < 0) currentGas = 0;

@@ -12,24 +12,31 @@ public class GrappleController : MonoBehaviour
     [SerializeField] private Grapple leftGrapple;
     [SerializeField] private Grapple rightGrapple;
 
+    [Header("Rope forces")]
+    [Tooltip("The gear will have a small warmup before pulling at max force (both grapples warm up together). Each grapple then pulls with Max Pull Force.")]
+    [SerializeField] private float maxPullForce = 30;
+    [Tooltip("Force which a grapple pulls with after activating strong pull (adds up with Max Pull Force). Strong pull is seperate for each grapple and ignores warming up.")]
+    [SerializeField] private float strongPullForce = 30;
+    [Tooltip("The additional force that applies when a grapple stops the player from going away from it.")]
+    [SerializeField] private float breakForce = 50;
+    [Tooltip("This represents 'internal resistance' of the grapple system, a small resistance that applies when player is moving towards the grapple.")]
+    [SerializeField] private float pullResistance = 2;
+    [Tooltip("The speed of warming up. The higher this is, the quicker the grapple gear is warmed up. It represents how much force adds to the current pulling force each second.")]
+    [SerializeField] private float warmpUpSpeed = 50;
+    private float currentPullForce = 0;
+
+    [Header("Gas Assist")]
+    [Tooltip("Gas Assist will try to make the player move more straight to the grapple instead of around it. It gives more control at the cost of less speed and 'swinging ability'.")]
+    [SerializeField] private float gasAssistForce = 3;
+    private float gasAssistClampFactor = 0.1f;
+
+    [Header("Other vars")]
+    [Tooltip("The (vertical) speed when the player jumps.")]
+    [SerializeField] private float jumpSpeed = 7;
+
     [Header("Booleans")]
     private bool canGrappleJump = true;
-    private bool useGravityCompensation;
     private bool warmUp = false;
-
-    [Header("Forces")]
-    private float jumpForce = 60;
-    private float maxPullForce = 30;
-    private float currentPullForce = 0;
-    private float strongPullForce = 30;
-    private float breakForce = 50;
-    private float gravityCompensationForce = 3;
-    private float gasAssistForce = 3;
-
-    [Header("Resistance")]
-    private float pullResistance = 2;
-    private float gasAssistClampFactor = 0.1f;
-    private float warmpUpSpeed = 50;
     #endregion
 
     private void Update()
@@ -43,6 +50,7 @@ public class GrappleController : MonoBehaviour
         warmUp = false;
         GrapplePullForce(leftGrapple);
         GrapplePullForce(rightGrapple);
+        if (leftGrapple.grapple.collided == false && rightGrapple.grapple.collided == false) canGrappleJump = true;
         WarmUpGrapple();
     }
 
@@ -82,12 +90,11 @@ public class GrappleController : MonoBehaviour
     /// <param name="grapple"></param>
     internal void GrapplePullForce(Grapple grapple)
     {
-        useGravityCompensation = false;
         if (grapple.grapple.collided)
         {
             MoveTowardGrapple(grapple);
             AddGasAssist(grapple);
-            Jump(grapple);
+            Jump();
 
             //Strong pull
             if (grapple.strongPull)
@@ -95,10 +102,6 @@ public class GrappleController : MonoBehaviour
         }
         else
             grapple.strongPull = false;
-
-        //anti-gravity compensation with gas
-        if (useGravityCompensation)
-            rb.AddForce(new Vector3(0, 1, 0) * gravityCompensationForce);
 
     }
 
@@ -132,7 +135,7 @@ public class GrappleController : MonoBehaviour
 
         grapple.grappleVec = (grapple.grapple.transform.position - transform.position).normalized;
 
-        //Resistance
+        //Vars for calculating resistance
         float angle = Vector3.Angle(grapple.grappleVec, rb.velocity);
         float velocityToGrapple = rb.velocity.magnitude * Mathf.Cos((angle * Mathf.PI) / 180);
 
@@ -163,17 +166,14 @@ public class GrappleController : MonoBehaviour
     /// Make the player jump when it is grounded.
     /// </summary>
     /// <param name="grapple"></param>
-    private void Jump(Grapple grapple)
+    private void Jump()
     {
         //begin jump
         if (playerController.IsGrounded() && canGrappleJump)
         {
-            rb.AddForce(new Vector3(0, 1, 0) * jumpForce); //Jump
+            rb.velocity += new Vector3(0, jumpSpeed, 0); //Jump
             canGrappleJump = false;
         }
         if (!playerController.IsGrounded() && canGrappleJump) canGrappleJump = false;
-
-        //for gravity compensation
-        useGravityCompensation = true;
     }
 }
