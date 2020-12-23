@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Collider col;
 
+    [Header("(Optional) Time Controller")]
+    [Tooltip("If a Time Controller is applied to the rigid body, add it here so the calculations will still be valid.")]
+    [SerializeField] private TimeController timeController;
+
     [Header("Stats")]
     private float groundResistance = 3;
     private float walkingForce = 20;
@@ -41,7 +45,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(IsGrounded()) walkAndSlideForce();
+        if(IsGrounded()) WalkAndSlideForce();
 
         //player rotation
         if (SteamVR_Actions.player_controller.TP_right_press.state)
@@ -57,24 +61,24 @@ public class PlayerController : MonoBehaviour
         return Physics.Raycast(transform.position + new Vector3(0, 0.25f, 0), Vector3.down, DistanceToTheGround + 0.1f);
     }
 
-    private void walkAndSlideForce()
+    private void WalkAndSlideForce()
     {
-        updateWalkingVector();
+        UpdateWalkingVector();
 
         if (SteamVR_Actions.player_controller.TP_left_press.state)
         {
 
-            if (rb.velocity.magnitude < maxWalkSpeed * walkingVector3.magnitude)
+            if (TimeFunctions.GetRealVelocity(timeController, rb).magnitude < maxWalkSpeed * walkingVector3.magnitude)
                 rb.AddForce(walkingVector3 * walkingForce);
             else
-                rb.AddForce(rb.velocity.normalized * groundResistance * -1);
+                rb.AddForce(TimeFunctions.GetRealVelocity(timeController, rb).normalized * groundResistance * -1);
 
         }
         else
-            rb.AddForce(rb.velocity.normalized * groundResistance * -1);
+            rb.AddForce(TimeFunctions.GetRealVelocity(timeController, rb).normalized * groundResistance * -1);
     }
 
-    internal void updateWalkingVector()
+    internal void UpdateWalkingVector()
     {
         Vector2 trackPadVector = SteamVR_Actions.player_controller.TP_left_vector.axis;
         Vector2 playerForward = new Vector2(playerHead.transform.forward.x, playerHead.transform.forward.z);

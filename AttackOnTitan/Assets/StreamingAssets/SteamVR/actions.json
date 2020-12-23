@@ -39,6 +39,14 @@
     {
       "name": "/actions/player_controller/in/grip_left",
       "type": "boolean"
+    },
+    {
+      "name": "/actions/player_controller/in/gripForce_left",
+      "type": "vector1"
+    },
+    {
+      "name": "/actions/player_controller/in/gripForce_right",
+      "type": "vector1"
     }
   ],
   "action_sets": [
@@ -47,6 +55,15 @@
       "usage": "leftright"
     }
   ],
-  "default_bindings": [],
+  "default_bindings": [
+    {
+      "controller_type": "vive_controller",
+      "binding_url": "application_generated_unity_attackontitan_exe_binding_vive_controller.json"
+    },
+    {
+      "controller_type": "knuckles",
+      "binding_url": "application_generated_unity_attackontitan_exe_binding_knuckles.json"
+    }
+  ],
   "localization": []
 }

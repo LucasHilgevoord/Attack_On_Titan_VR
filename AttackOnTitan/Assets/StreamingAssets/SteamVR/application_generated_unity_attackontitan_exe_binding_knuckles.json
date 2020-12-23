@@ -1,0 +1,88 @@
+{
+   "action_manifest_version" : 0,
+   "alias_info" : {},
+   "app_key" : "application.generated.unity.attackontitan.exe",
+   "bindings" : {
+      "/actions/player_controller" : {
+         "chords" : [],
+         "poses" : [
+            {
+               "output" : "/actions/player_controller/in/left_hand",
+               "path" : "/user/hand/left/pose/raw"
+            },
+            {
+               "output" : "/actions/player_controller/in/right_hand",
+               "path" : "/user/hand/right/pose/raw"
+            }
+         ],
+         "sources" : [
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/player_controller/in/trigger_left"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/trigger"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/player_controller/in/trigger_right"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/trigger"
+            },
+            {
+               "inputs" : {
+                  "position" : {
+                     "output" : "/actions/player_controller/in/tp_left_vector"
+                  },
+                  "touch" : {
+                     "output" : "/actions/player_controller/in/tp_left_press"
+                  }
+               },
+               "mode" : "joystick",
+               "path" : "/user/hand/left/input/thumbstick"
+            },
+            {
+               "inputs" : {
+                  "position" : {
+                     "output" : "/actions/player_controller/in/tp_right_vector"
+                  },
+                  "touch" : {
+                     "output" : "/actions/player_controller/in/tp_right_press"
+                  }
+               },
+               "mode" : "joystick",
+               "path" : "/user/hand/right/input/thumbstick"
+            },
+            {
+               "inputs" : {
+                  "force" : {
+                     "output" : "/actions/player_controller/in/gripforce_left"
+                  }
+               },
+               "mode" : "force_sensor",
+               "path" : "/user/hand/left/input/grip"
+            },
+            {
+               "inputs" : {
+                  "force" : {
+                     "output" : "/actions/player_controller/in/gripforce_right"
+                  }
+               },
+               "mode" : "force_sensor",
+               "path" : "/user/hand/right/input/grip"
+            }
+         ]
+      }
+   },
+   "category" : "steamvr_input",
+   "controller_type" : "knuckles",
+   "description" : "",
+   "name" : "Giant Slayer Binding (Knuckles)",
+   "options" : {},
+   "simulated_actions" : []
+}

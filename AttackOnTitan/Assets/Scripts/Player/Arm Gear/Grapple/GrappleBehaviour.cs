@@ -8,19 +8,24 @@ using Valve.VR;
 /// </summary>
 public class GrappleBehaviour : MonoBehaviour
 {
-    [SerializeField]
-    GameObject grapple;
+    [Header("Components/references")]
+    [SerializeField] GameObject grapple;
+    [SerializeField] Transform handTarget;
+    [SerializeField] string definedButton = "";
+    [SerializeField] GameObject targetSphere;
+    [SerializeField] float targetSphereScale = 0.008f;
 
-    [SerializeField]
-    Transform handTarget;
+    [Header("Grapple properties")]
+    [SerializeField] float grappleSpeed = 200;
+    [SerializeField] float grappleLength = 50;
 
-    [SerializeField]
-    float grappleSpeed = 200;
-    [SerializeField]
-    float grappleLength = 50;
+    [Header("(Optional) Time Controller")]
+    [Tooltip("If a Time Controller is applied to the rigid body, add it here so the calculations will still be valid.")]
+    [SerializeField] private TimeController timeController;
 
-    [SerializeField]
-    string definedButton = "";
+    private float timeSpeed = 1;
+
+
 
     bool pressedTrigger = false;
     bool canGrapple = true;
@@ -47,6 +52,9 @@ public class GrappleBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (timeController != null)
+            timeSpeed = timeController.TimeSpeed;
+
         if(button.axis == 1f)
         {
             pressedTrigger = true;
@@ -62,12 +70,33 @@ public class GrappleBehaviour : MonoBehaviour
         if (grappleLine.enabled)
         {
             GetComponent<GrappleLineDrawer>().DrawLooseLine(grapple.transform.position, transform.position, lineTimer, flatPart);
-            lineTimer += Time.deltaTime;
+            lineTimer += TimeFunctions.DeltaTime(timeController);
 
             if (linePhase)
             {
-                flatPart += Time.deltaTime;
+                flatPart += TimeFunctions.DeltaTime(timeController);
             }
+        }
+
+        //Draw Circle at target
+        if (grapple.active == false)
+        {
+            RaycastHit target;
+            if(Physics.Raycast(handTarget.position, handTarget.up,
+                out target, grappleLength, LayerMask.GetMask("Default")))
+            {
+                targetSphere.transform.position = target.point;
+                targetSphere.SetActive(true);
+                targetSphere.transform.localScale = target.distance * targetSphereScale * Vector3.one;
+            }
+            else
+            {
+                targetSphere.SetActive(false);
+            }
+        }
+        else
+        {
+            targetSphere.SetActive(false);
         }
     }
 
@@ -75,13 +104,11 @@ public class GrappleBehaviour : MonoBehaviour
     {
         grapple.SetActive(true);
         grapple.transform.position = transform.position;
-        //grapple.transform.rotation = transform.parent.transform.rotation;
-        //grapple.transform.LookAt(grapple.transform.position - transform.parent.up);
         grapple.transform.LookAt(grapple.transform.position + handTarget.up);
         grappleLine.enabled = true;
         lineTimer = 0;
         flatPart = 0;
-        StartCoroutine(MoveGrapple(grapple.transform, GetComponentInParent<Rigidbody>().velocity));
+        StartCoroutine(MoveGrapple(grapple.transform));
     }
 
     void endGrapple()
@@ -90,16 +117,16 @@ public class GrappleBehaviour : MonoBehaviour
         grapple.transform.parent = null;
     }
 
-    IEnumerator MoveGrapple(Transform grapple, Vector3 beginVelocity)
+    IEnumerator MoveGrapple(Transform grapple)
     {
         while (pressedTrigger && Vector3.Distance(grapple.position, transform.position) <= grappleLength)
         {
             //Move foward
             if (!grapple.GetComponent<HookBehavior>().collided)
             {
-                Vector3 velocityVector = grapple.transform.forward * grappleSpeed + beginVelocity;
+                Vector3 velocityVector = grapple.transform.forward * grappleSpeed;
                 RaycastHit grappleInfo;
-                if (Physics.Raycast(grapple.position, velocityVector, out grappleInfo, grappleSpeed * Time.deltaTime, LayerMask.GetMask("Default")))
+                if (Physics.Raycast(grapple.position, velocityVector, out grappleInfo, grappleSpeed * TimeFunctions.DeltaTime(timeController), LayerMask.GetMask("Default")))
                 {
                     //The grapple is hitting something in this frame, so instead of updating the position, we immediatly do the collision code
                     grapple.position = grappleInfo.point;
@@ -116,7 +143,7 @@ public class GrappleBehaviour : MonoBehaviour
                 else
                 {
                     //Everything is clear, the grapple goes further
-                    grapple.position += velocityVector * Time.deltaTime;
+                    grapple.position += velocityVector * TimeFunctions.DeltaTime(timeController);
                 }
 
             }
@@ -152,9 +179,9 @@ public class GrappleBehaviour : MonoBehaviour
         linePhase = true;
         lineTimer = 0;
 
-        while (Vector3.Distance(grapple.position, transform.position) > grappleSpeed * Time.deltaTime + 0.5f)
+        while (Vector3.Distance(grapple.position, transform.position) > grappleSpeed * TimeFunctions.DeltaTime(timeController) + 0.5f)
         {
-            grapple.position += (transform.position - grapple.position).normalized * grappleSpeed * Time.deltaTime;
+            grapple.position += (transform.position - grapple.position).normalized * grappleSpeed * TimeFunctions.DeltaTime(timeController);
             yield return new WaitForEndOfFrame();
         }
 

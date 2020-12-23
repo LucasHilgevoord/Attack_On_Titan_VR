@@ -12,6 +12,10 @@ public class GrappleController : MonoBehaviour
     [SerializeField] private Grapple leftGrapple;
     [SerializeField] private Grapple rightGrapple;
 
+    [Header("(Optional) Time Controller")]
+    [Tooltip("If a Time Controller is applied to the rigid body, add it here so the calculations will still be valid.")]
+    [SerializeField] private TimeController timeController;
+
     [Header("Rope forces")]
     [Tooltip("The gear will have a small warmup before pulling at max force (both grapples warm up together). Each grapple then pulls with Max Pull Force.")]
     [SerializeField] private float maxPullForce = 30;
@@ -113,11 +117,11 @@ public class GrappleController : MonoBehaviour
     private void WarmUpGrapple()
     {
         if (warmUp)
-            currentPullForce += warmpUpSpeed * Time.deltaTime;
+            currentPullForce += warmpUpSpeed * TimeFunctions.DeltaTime(timeController);
         else
         {
             //grapple cooling down
-            currentPullForce -= warmpUpSpeed * Time.deltaTime;
+            currentPullForce -= warmpUpSpeed * TimeFunctions.DeltaTime(timeController);
             if (currentPullForce < 0) currentPullForce = 0;
         }
     }
@@ -136,8 +140,8 @@ public class GrappleController : MonoBehaviour
         grapple.grappleVec = (grapple.grapple.transform.position - transform.position).normalized;
 
         //Vars for calculating resistance
-        float angle = Vector3.Angle(grapple.grappleVec, rb.velocity);
-        float velocityToGrapple = rb.velocity.magnitude * Mathf.Cos((angle * Mathf.PI) / 180);
+        float angle = Vector3.Angle(grapple.grappleVec, TimeFunctions.GetRealVelocity(timeController, rb));
+        float velocityToGrapple = TimeFunctions.GetRealVelocity(timeController, rb).magnitude * Mathf.Cos((angle * Mathf.PI) / 180);
 
         //Forces
         rb.AddForce(grapple.grappleVec * currentPullForce); //Main force
@@ -157,9 +161,9 @@ public class GrappleController : MonoBehaviour
     {
 
         //Gas Assist (makes player move more straight in the direction of the grapple and less around it)
-        Vector3 velVec = rb.velocity.normalized;
+        Vector3 velVec = TimeFunctions.GetRealVelocity(timeController, rb).normalized;
         Vector3 gasAssistVec = -1 * velVec + Vector3.Dot(grapple.grappleVec, velVec) * grapple.grappleVec;
-        rb.AddForce(gasAssistVec * gasAssistForce * Mathf.Clamp01(rb.velocity.magnitude * gasAssistClampFactor));
+        rb.AddForce(gasAssistVec * gasAssistForce * Mathf.Clamp01(TimeFunctions.GetRealVelocity(timeController, rb).magnitude * gasAssistClampFactor));
     }
 
     /// <summary>
@@ -171,7 +175,8 @@ public class GrappleController : MonoBehaviour
         //begin jump
         if (playerController.IsGrounded() && canGrappleJump)
         {
-            rb.velocity += new Vector3(0, jumpSpeed, 0); //Jump
+            //rb.AddForce(new Vector3(0, jumpSpeed, 0), ForceMode.Impulse); //Jump
+            TimeFunctions.AddRealVelocity(new Vector3(0, jumpSpeed, 0), timeController, rb);
             canGrappleJump = false;
         }
         if (!playerController.IsGrounded() && canGrappleJump) canGrappleJump = false;
