@@ -14,6 +14,7 @@ public class GrappleBehaviour : MonoBehaviour
     [SerializeField] string definedButton = "";
     [SerializeField] GameObject targetSphere;
     [SerializeField] float targetSphereScale = 0.008f;
+    [SerializeField] private AudioSource audioSource;
 
     [Header("Grapple properties")]
     [SerializeField] float grappleSpeed = 200;
