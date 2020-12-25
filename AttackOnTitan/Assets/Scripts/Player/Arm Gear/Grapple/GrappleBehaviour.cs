@@ -110,6 +110,8 @@ public class GrappleBehaviour : MonoBehaviour
         lineTimer = 0;
         flatPart = 0;
         StartCoroutine(MoveGrapple(grapple.transform));
+
+        audioSource.Play();
     }
 
     void endGrapple()
