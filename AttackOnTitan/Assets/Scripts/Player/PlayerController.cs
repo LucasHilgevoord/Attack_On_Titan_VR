@@ -68,7 +68,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (groundDistance <= 0.25f)
+        if (groundDistance <= 0.1f)
         {
             WalkAndSlideForce(); //Note: This function will also manage IK
         }

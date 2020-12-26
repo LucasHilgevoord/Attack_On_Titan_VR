@@ -9,8 +9,9 @@ using Valve.VR;
 public class GrappleBehaviour : MonoBehaviour
 {
     [Header("Components/references")]
-    [SerializeField] GameObject grapple;
+    [SerializeField] public GameObject grapple;
     [SerializeField] Transform handTarget;
+    [Tooltip("Defined button should be either 'TriggerLeft' or 'TriggerRight'")]
     [SerializeField] string definedButton = "";
     [SerializeField] GameObject targetSphere;
     [SerializeField] float targetSphereScale = 0.008f;
@@ -18,15 +19,14 @@ public class GrappleBehaviour : MonoBehaviour
 
     [Header("Grapple properties")]
     [SerializeField] float grappleSpeed = 200;
+    [Tooltip("Length of the rope, or in other words, the range of the grapple.")]
     [SerializeField] float grappleLength = 50;
 
     [Header("(Optional) Time Controller")]
     [Tooltip("If a Time Controller is applied to the rigid body, add it here so the calculations will still be valid.")]
     [SerializeField] private TimeController timeController;
 
-    private float timeSpeed = 1;
-
-
+    internal bool collided = false;
 
     bool pressedTrigger = false;
     bool canGrapple = true;
@@ -34,10 +34,7 @@ public class GrappleBehaviour : MonoBehaviour
     private Valve.VR.SteamVR_Action_Single button;
 
     LineRenderer grappleLine;
-
-    float lineTimer = 0;
-    bool linePhase = false;
-    float flatPart = 0;
+    GrappleLineDrawer lineDrawer;
 
     private void Start()
     {
@@ -45,6 +42,7 @@ public class GrappleBehaviour : MonoBehaviour
         if (definedButton == "TriggerRight") button = SteamVR_Actions.player_controller.trigger_right;
 
         grappleLine = GetComponent<LineRenderer>();
+        lineDrawer = GetComponent<GrappleLineDrawer>();
 
         grapple.SetActive(false);
     }
@@ -53,31 +51,15 @@ public class GrappleBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (timeController != null)
-            timeSpeed = timeController.TimeSpeed;
-
         if(button.axis == 1f)
         {
             pressedTrigger = true;
             if (canGrapple && button.changed)
             {
                 startGrapple();
-                canGrapple = false;
             }
         }
         else pressedTrigger = false;
-
-        //Make the LineRenderer connect grapple and grapple point.
-        if (grappleLine.enabled)
-        {
-            GetComponent<GrappleLineDrawer>().DrawLooseLine(grapple.transform.position, transform.position, lineTimer, flatPart);
-            lineTimer += TimeFunctions.DeltaTime(timeController);
-
-            if (linePhase)
-            {
-                flatPart += TimeFunctions.DeltaTime(timeController);
-            }
-        }
 
         //Draw Circle at target
         if (grapple.active == false)
@@ -103,63 +85,51 @@ public class GrappleBehaviour : MonoBehaviour
 
     void startGrapple()
     {
+        canGrapple = false;
         grapple.SetActive(true);
         grapple.transform.position = transform.position;
         grapple.transform.LookAt(grapple.transform.position + handTarget.up);
         grappleLine.enabled = true;
-        lineTimer = 0;
-        flatPart = 0;
-        StartCoroutine(MoveGrapple(grapple.transform));
+        lineDrawer.StartGrappleLine();
+        StartCoroutine(MoveGrapple(grapple));
 
         audioSource.Play();
     }
 
     void endGrapple()
     {
+        canGrapple = true;
+        lineDrawer.EndGrappleLine();
         grapple.SetActive(false);
         grapple.transform.parent = null;
     }
 
-    IEnumerator MoveGrapple(Transform grapple)
+    IEnumerator MoveGrapple(GameObject grapple)
     {
-        while (pressedTrigger && Vector3.Distance(grapple.position, transform.position) <= grappleLength)
+        while (pressedTrigger && Vector3.Distance(grapple.transform.position, transform.position) <= grappleLength)
         {
             //Move foward
-            if (!grapple.GetComponent<HookBehavior>().collided)
+            if (!collided)
             {
                 Vector3 velocityVector = grapple.transform.forward * grappleSpeed;
                 RaycastHit grappleInfo;
-                if (Physics.Raycast(grapple.position, velocityVector, out grappleInfo, grappleSpeed * TimeFunctions.DeltaTime(timeController), LayerMask.GetMask("Default")))
+                if (Physics.Raycast(grapple.transform.position, velocityVector, out grappleInfo, grappleSpeed * TimeFunctions.DeltaTime(timeController), LayerMask.GetMask("Default")))
                 {
-                    //The grapple is hitting something in this frame, so instead of updating the position, we immediatly do the collision code
-                    grapple.position = grappleInfo.point;
-                    grapple.GetComponent<HookBehavior>().collided = true;
-                    grapple.GetComponent<Collider>().enabled = false;
+                    //The grapple is hitting something in this frame
+                    grapple.transform.position = grappleInfo.point;
+                    collided = true;
                     GameObject empty = new GameObject();
                     empty.name = "Grapple Parent";
                     empty.transform.parent = grappleInfo.collider.gameObject.transform;
-                    grapple.parent = empty.transform;
-                    grapple.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                    linePhase = true;
-                    lineTimer = 0;
+                    grapple.transform.parent = empty.transform;
+                    lineDrawer.TightenGrappleLine();
                 }
                 else
                 {
                     //Everything is clear, the grapple goes further
-                    grapple.position += velocityVector * TimeFunctions.DeltaTime(timeController);
+                    grapple.transform.position += velocityVector * TimeFunctions.DeltaTime(timeController);
                 }
 
-            }
-            else if (grapple.parent == null)
-            {
-                //Trick to make grapple child of object without skewing the scale
-                GameObject empty = new GameObject();
-                empty.name = "Grapple Parent";
-                empty.transform.parent = grapple.GetComponent<HookBehavior>().collidedObject.transform;
-                grapple.parent = empty.transform;
-                grapple.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                linePhase = true;
-                lineTimer = 0;
             }
             yield return new WaitForEndOfFrame();
         }
@@ -170,17 +140,12 @@ public class GrappleBehaviour : MonoBehaviour
 
     IEnumerator MoveGrappleBack(Transform grapple)
     {
-        //grapple.GetComponent<Rigidbody>().isKinematic = false;
-        grapple.GetComponent<HookBehavior>().collided = false;
+        collided = false;
         if(grapple.parent != null)
         {
             Destroy(grapple.parent.gameObject);
         }
         grapple.parent = null;
-
-        //Manage grapple line
-        linePhase = true;
-        lineTimer = 0;
 
         while (Vector3.Distance(grapple.position, transform.position) > grappleSpeed * TimeFunctions.DeltaTime(timeController) + 0.5f)
         {
@@ -190,8 +155,5 @@ public class GrappleBehaviour : MonoBehaviour
 
         //Allow grappling again
         endGrapple();
-        canGrapple = true;
-        grappleLine.enabled = false;
-        linePhase = false;
     }
 }

@@ -7,10 +7,10 @@ public class Grapple
 {
     [SerializeField] private string name;
 
-    [Tooltip("With 'hand' I originally intended the controller, but any child of that (like handTarget) should work too")]
+    [Tooltip("With 'hand' I originally intended the controller, but any child of that (like handTarget) should work too.")]
     public GameObject hand;
-    [Tooltip("The actual grapple itself, aka, the hook")]
-    public HookBehavior grapple;
+    [Tooltip("The grapple point that manages the grapple.")]
+    public GrappleBehaviour grapplePoint;
 
     //grappleVec is the normalized vector pointing from the player to the grapple
     internal Vector3 grappleVec;

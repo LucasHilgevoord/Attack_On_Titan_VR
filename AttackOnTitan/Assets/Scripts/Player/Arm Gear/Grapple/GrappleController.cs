@@ -54,7 +54,7 @@ public class GrappleController : MonoBehaviour
         warmUp = false;
         GrapplePullForce(leftGrapple);
         GrapplePullForce(rightGrapple);
-        if (leftGrapple.grapple.collided == false && rightGrapple.grapple.collided == false) canGrappleJump = true;
+        if (leftGrapple.grapplePoint.collided == false && rightGrapple.grapplePoint.collided == false) canGrappleJump = true;
         WarmUpGrapple();
     }
 
@@ -72,7 +72,7 @@ public class GrappleController : MonoBehaviour
         grapple.beforePrevHandPosition = grapple.prevHandPosition;
         grapple.prevHandPosition = grapple.handPosition;
 
-        if (grapple.grapple.collided)
+        if (grapple.grapplePoint.collided)
         {
             //Calculate difference in speed and compute the projection of that onto grappleVec. This will be related to acceleration to/from the grapple
             grapple.speedDifferenceProjection = Vector3.Dot((grapple.relativeDisplacement - grapple.prevRelativeDisplacement) / Time.deltaTime, grapple.grappleVec);
@@ -94,7 +94,7 @@ public class GrappleController : MonoBehaviour
     /// <param name="grapple"></param>
     internal void GrapplePullForce(Grapple grapple)
     {
-        if (grapple.grapple.collided)
+        if (grapple.grapplePoint.collided)
         {
             MoveTowardGrapple(grapple);
             AddGasAssist(grapple);
@@ -137,7 +137,7 @@ public class GrappleController : MonoBehaviour
 
         if (currentPullForce > maxPullForce) { currentPullForce = maxPullForce; }
 
-        grapple.grappleVec = (grapple.grapple.transform.position - transform.position).normalized;
+        grapple.grappleVec = (grapple.grapplePoint.grapple.transform.position - transform.position).normalized;
 
         //Vars for calculating resistance
         float angle = Vector3.Angle(grapple.grappleVec, TimeFunctions.GetRealVelocity(timeController, rb));
