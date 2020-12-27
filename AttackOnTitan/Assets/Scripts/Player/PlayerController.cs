@@ -6,12 +6,12 @@ using Valve.VR;
 public class PlayerController : MonoBehaviour
 {
     #region parameters
-    [Header("Components")]
+    [Header("References")]
     [SerializeField] private GameObject playerHead;
     private Rigidbody rb;
     private Collider col;
     [SerializeField] private RootMotion.FinalIK.VRIK vrik;
-    [SerializeField] private Transform pelvis; //Note: refers to pelvisParent, not pelvisTarget;
+    [SerializeField] private Transform pelvis;
     [SerializeField] private Transform llmt; // Left leg movable target
     [SerializeField] private Transform rlmt; //right leg movable target
     [SerializeField] private Transform leftLegTarget;
@@ -27,11 +27,17 @@ public class PlayerController : MonoBehaviour
     private float maxWalkSpeed = 5;
 
     [Header("Options")]
-    private float rotationMultiplier = 100;
+    [Tooltip("Continous rotation multiplier. The amount of degrees that you rotate per second at maximum speed.")]
+    [SerializeField] private float contRotMultiplier = 100;
+    [Tooltip("Snap rotation amount. You will always rotate this exact number of degrees in one snap.")]
+    [SerializeField] private float snapRotAmount = 30;
+    [Tooltip("Turn this on to use snap rotation, and off for continuous rotation.")]
+    [SerializeField] private bool useSnapRotation = false;
+
+
     
     [Header("Calculation vars")]
     internal Vector3 walkingVector3;
-    private Vector2 rotationVector;
     float groundDistance;
     #endregion
 
@@ -49,25 +55,24 @@ public class PlayerController : MonoBehaviour
             transform.position = Vector3.zero;
             rb.velocity = Vector3.zero;
         }
+
+        //Player rotation
+        if (useSnapRotation)
+        {
+            if (SteamVR_Actions.player_controller.TP_right_press.GetStateDown(SteamVR_Input_Sources.Any))
+                RotatePlayer(Mathf.Sign(SteamVR_Actions.player_controller.TP_right_vector.axis.x) * snapRotAmount);
+        }
+        else
+        {
+            if (SteamVR_Actions.player_controller.TP_right_press.state)
+                RotatePlayer(SteamVR_Actions.player_controller.TP_right_vector.axis.x * contRotMultiplier * Time.deltaTime);
+        }
+        
     }
 
     private void FixedUpdate()
     {
         groundDistance = DistToGround(10);
-
-        //player rotation
-        if (SteamVR_Actions.player_controller.TP_right_press.state)
-        {
-            rotationVector = SteamVR_Actions.player_controller.TP_right_vector.axis;
-            transform.Rotate(0, rotationVector.x * rotationMultiplier * Time.deltaTime, 0);
-
-            if(groundDistance > 0.25f) //IK should rotate on it's own on ground, but not in mid-air
-            {
-                vrik.solver.AddPlatformMotion(rb.velocity * TimeFunctions.DeltaTime(timeController),
-                Quaternion.Euler(0, rotationVector.x * rotationMultiplier * Time.deltaTime, 0), playerHead.transform.position);
-            }
-        }
-
         if (groundDistance <= 0.1f)
         {
             WalkAndSlideForce(); //Note: This function will also manage IK
@@ -130,6 +135,16 @@ public class PlayerController : MonoBehaviour
         walkingVector3 = new Vector3(walkingVector.x, 0, walkingVector.y);
     }
 
+    internal void RotatePlayer(float degrees)
+    {
+        transform.Rotate(0, degrees, 0);
+
+        if (groundDistance > 0.25f) //IK should rotate on it's own on ground, but not in mid-air
+        {
+            vrik.solver.AddPlatformMotion(Vector3.zero, Quaternion.Euler(0, degrees, 0), playerHead.transform.position);
+        }
+    }
+
     internal void ControlIK(float locoWeight, float posWeight, float rotWeight)
     {
         vrik.solver.locomotion.weight = locoWeight;// Mathf.Lerp(vrik.solver.locomotion.weight, locoWeight, 10 * TimeFunctions.DeltaTime(timeController));
@@ -176,7 +191,6 @@ public class PlayerController : MonoBehaviour
         rlmt.localPosition = new Vector3(localRBvelocity.x, 0, localRBvelocity.z).normalized
             * Mathf.Clamp(localRBvelocity.magnitude - maxWalkSpeed, 1, 10) * 0.05f + rightLocalHip();
 
-        //vrik.solver.Reset();
         ControlIK(0, 1, 0);
     }
 
@@ -188,7 +202,6 @@ public class PlayerController : MonoBehaviour
         rlmt.localPosition = Vector3.Lerp(transform.InverseTransformPoint(rightLegTarget.position), rightLocalHip() + (Vector3.down + locRBvelocity()).normalized, t);
 
         vrik.solver.AddPlatformMotion(rb.velocity * TimeFunctions.DeltaTime(timeController), Quaternion.identity, playerHead.transform.position);
-        //vrik.solver.Reset();
         ControlIK(0, 1, Mathf.Clamp01(1 - t));
     }
 }

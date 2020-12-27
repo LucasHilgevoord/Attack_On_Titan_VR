@@ -17,7 +17,7 @@ public class GrappleLineDrawer : MonoBehaviour
     public AnimationCurve timeEffect;
     public AnimationCurve curve;
 
-    private float curveSize = 7;
+    private float curveSize = 5;
     private float curveAmount = 0.3f;
     private float animationTime = 2;
     private float pullTime = 0.5f;
