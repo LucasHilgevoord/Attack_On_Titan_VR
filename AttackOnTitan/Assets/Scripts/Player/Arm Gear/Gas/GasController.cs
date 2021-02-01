@@ -25,8 +25,8 @@ public class GasController : MonoBehaviour
     [SerializeField] private float gasBurstSpeed = 3.5f;
     [Tooltip("How much gas the gas burst uses.")]
     [SerializeField] private float gasBurstCost = 5;
-    [Tooltip("Performance of gas tank goes down when gas is almost empty. The higher Gas Tank Parameter is, the more 'square' the graph looks of force vs tank content.")]
-    [SerializeField] private float gasTankParameter = 10;
+    [Tooltip("Graph of performance versus gas content. Maximum should be 1, and must be defined for inputs between 0 and 1.")]
+    [SerializeField] private AnimationCurve gasCurve;
 
     [Header("Gas tank")]
     [Tooltip("The volume of the gas tank in seconds of use. Using both hands means gas will deplete 2x faster.")]
@@ -141,9 +141,7 @@ public class GasController : MonoBehaviour
     private void useGas(Transform hand, ParticleSystem gas, bool burst, int flip)
     {
         //Code to weaken force when tank is almost empty
-        float tankRatio = currentGas / maxGas;
-        float amplitude = 1 / (1 - Mathf.Exp(-gasTankParameter));
-        float strength = amplitude * (1 - Mathf.Exp(-gasTankParameter * tankRatio));
+        float strength = gasCurve.Evaluate(currentGas / maxGas);
 
         if (burst)
         {
@@ -169,10 +167,8 @@ public class GasController : MonoBehaviour
         float vectorHeight = Mathf.Sqrt(1 - playerController.walkingVector3.sqrMagnitude);
         Vector3 gasVector = playerController.walkingVector3 + new Vector3(0, vectorHeight, 0);
 
-        float tankRatio = currentGas / maxGas;
-        float amplitude = 1 / (1 - Mathf.Exp(-gasTankParameter));
-        float strength = gasForce * amplitude * (1 - Mathf.Exp(-gasTankParameter * tankRatio));
-        rb.AddForce(gasVector * 2 * strength);
+        float strength = gasCurve.Evaluate(currentGas / maxGas);
+        rb.AddForce(gasVector * 2 * strength * gasForce);
         currentGas -= 2 * TimeFunctions.DeltaTime(timeController);
         if (currentGas < 0) currentGas = 0;
 
